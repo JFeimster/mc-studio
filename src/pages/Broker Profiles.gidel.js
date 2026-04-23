@@ -1,4 +1,3 @@
-import wixLocation from 'wix-location';
 import wixWindowFrontend from 'wix-window-frontend';
 
 function normalizeImage(imageValue) {
@@ -107,14 +106,79 @@ function normalizeResourceList(value) {
   return [];
 }
 
-$w.onReady(function () {
-  const broker = wixWindowFrontend.getRouterData();
-  const frame = $w('#partnerFrame');
+function getPreviewFallbackBroker() {
+  return {
+    fullName: 'Darwin Hanneman',
+    partnerTagline:
+      'Equipment finance guidance for business owners who need a practical next move, not more noise.',
+    heroHeadline:
+      'Equipment financing guidance with a more practical read on what may fit.',
+    heroSubheadline:
+      'Darwin Hanneman helps business owners explore equipment financing and related funding options with a clearer understanding of what may work, what may not, and what to do next.',
+    agencyName: 'Moonshine Capital',
+    shortBio:
+      'Darwin Hanneman is a Moonshine Capital funding partner with a practical, relationship-driven approach to helping business owners explore equipment financing and related funding paths. His page is built to give prospects a cleaner starting point, useful tools, and a direct route to take action.',
+    whyChooseYou:
+      'Darwin is focused on helping business owners make a more informed decision when equipment, vehicles, or business-critical assets are on the line. Instead of pitching funding like a magic trick, the goal is to help prospects understand which lane may fit best, where they may have stronger approval odds, and what next step is actually worth taking.',
+    fundingSpecialties: [
+      'Equipment Financing',
+      'Vehicle & Fleet Financing',
+      'Revenue-Based Funding',
+      'Business Term Loans',
+      'SBA Options',
+    ],
+    targetAudience: [
+      'Business Owners Needing Equipment',
+      'Contractors',
+      'Owner-Operators',
+      'Service Businesses',
+      'Real Estate Investors',
+    ],
+    curatedResourcesResolved: [
+      {
+        title: 'The Trucker Repair-to-Revenue Tracker',
+        url: 'https://trucker-repair-tracker.vercel.app/',
+        description:
+          'Estimate how repair downtime affects revenue and cash-flow recovery for trucking and equipment-heavy operators.',
+        buttonText: 'Open Resource',
+      },
+      {
+        title: 'Funding Estimator',
+        url: 'https://estimator-lyart.vercel.app/',
+        description:
+          'Model possible funding amounts and set better expectations before applying.',
+        buttonText: 'Open Resource',
+      },
+      {
+        title: 'Staged Funding',
+        url: 'https://staged-funding.vercel.app/',
+        description:
+          'Explore smarter capital sequencing instead of taking one blunt funding hit.',
+        buttonText: 'Open Resource',
+      },
+      {
+        title: 'Funding for Any Reason',
+        url: 'https://funding-any-reason.vercel.app/',
+        description:
+          'A broader funding option for applicants whose use case does not fit neatly into one box.',
+        buttonText: 'Open Resource',
+      },
+      {
+        title: 'Financing Widget',
+        url: 'https://financing-widget-gamma.vercel.app/',
+        description:
+          'A lightweight financing widget for quick qualification and conversion support.',
+        buttonText: 'Open Resource',
+      },
+    ],
+    applicationUrl: 'https://bit.ly/fundingwithdarwin',
+    calendarUrl: 'https://distilledfunding.com/book-online',
+  };
+}
 
-  if (!broker) {
-    wixLocation.to('/');
-    return;
-  }
+$w.onReady(function () {
+  const frame = $w('#partnerFrame');
+  const broker = wixWindowFrontend.getRouterData() || getPreviewFallbackBroker();
 
   const curatedResources = normalizeResourceList(
     broker.curatedResourcesResolved
@@ -161,7 +225,8 @@ $w.onReady(function () {
     }
 
     if (data.type === 'openLink' && data.url) {
-      wixLocation.to(data.url);
+      wixWindowFrontend.openLightbox ? null : null;
+      window.location.href = data.url;
     }
   });
 });
