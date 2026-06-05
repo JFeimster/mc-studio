@@ -1,9 +1,9 @@
 import { badRequest, redirect, serverError } from 'wix-http-functions';
 import { fetch } from 'wix-fetch';
 import wixData from 'wix-data';
+import { getSecret } from 'wix-secrets-backend';
 
 const WIX_CLIENT_ID = 'e4162926-bd41-4ba1-bbe4-b0eacefa18d6';
-const WIX_CLIENT_SECRET = '5502bed8-1ba3-4bad-a3fe-d7a55c784d44';
 const WIX_SCOPE = 'offline_access';
 const TOKEN_COLLECTION = 'WixOAuthTokens';
 const AFTER_LOGIN_PATH = '/my-account';
@@ -118,15 +118,16 @@ export async function get_wixOauthCallback(request) {
         });
     }
 
-    const payload = toQueryString({
-        grant_type: 'authorization_code',
-        client_id: WIX_CLIENT_ID,
-        client_secret: WIX_CLIENT_SECRET,
-        redirect_uri: callbackUrl,
-        code
-    });
-
     try {
+        const wixClientSecret = await getSecret('WIX_CLIENT_SECRET');
+        const payload = toQueryString({
+            grant_type: 'authorization_code',
+            client_id: WIX_CLIENT_ID,
+            client_secret: wixClientSecret,
+            redirect_uri: callbackUrl,
+            code
+        });
+
         const tokenResponse = await fetch(TOKEN_URL, {
             method: 'POST',
             headers: {
