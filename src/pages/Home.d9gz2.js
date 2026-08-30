@@ -1,10 +1,11 @@
-// API Reference: https://www.wix.com/velo/reference/api-overview/introduction
-// “Hello, World!” Example: https://learn-code.wix.com/en/article/hello-world
+import { readHomepageIntent } from 'public/session-state';
+import { HOMEPAGE_EVENTS, trackHomepageEvent } from 'public/analytics';
 
 $w.onReady(function () {
-    // Write your JavaScript here
+    const previousIntent = readHomepageIntent();
 
-    // To select an element by ID use: $w('#elementID')
-
-    // Click 'Preview' to run your code
+    trackHomepageEvent(HOMEPAGE_EVENTS.READY, {
+        hasPreviousIntent: Boolean(previousIntent),
+        previousIntent: previousIntent ? previousIntent.intent : null
+    });
 });
